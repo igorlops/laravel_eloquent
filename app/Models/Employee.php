@@ -15,7 +15,7 @@ class Employee extends Model
      * 
      * */
     protected $fillable = ['nome','cpf','data_contratacao'];
-
+    protected $table = 'employees';
     /**
      * Defino o que não será permitido
      *

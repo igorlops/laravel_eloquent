@@ -14,7 +14,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($projects as $project)
+                @forelse ($projects as $project)
                 <tr>
                     <th scope="row">{{ $project->id }}</th>
                     <td><a href=" {{route('projects.show',$project)}}">{{$project->nome}}</a></td>
@@ -28,7 +28,9 @@
                         </form>
                     </td>
                 </tr>
-                @endforeach
+                @empty
+                    <tr><td><td>Nenhum projeto cadastrado</td></td></tr>
+                @endforelse
             </tbody>
         </table>
 

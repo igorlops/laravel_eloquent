@@ -33,7 +33,7 @@ class EmployeeRequest extends FormRequest
             'bairro'=>['required','max:50','string'],
             'cidade'=>['required','max:50','string'],
             'complemento'=>['max:50','string'],
-            'cep'=>['required','size:8','string'],
+            'cep'=>['required','size:9','string'],
             'estado'=>['required','size:2','string'],
         ];
     }

@@ -26,12 +26,11 @@ class ClientController extends Controller
     /**
      * Visualiza detalhes do clientes
      *
-     * @param integer $id
+     * @param Client $client
      * @return string
      */
-    public function show(int $id) :View
-    {
-        $client = Client::findOrFail($id);
+    public function show(Client $client) :View
+    {;
         return view("clients.show", [
             "client"=>$client
         ]);
@@ -66,30 +65,25 @@ class ClientController extends Controller
 /**
  * Abre view de formulário com os dados preenchidos
  *
- * @param integer $id
+ * @param Client $client
  * @return View
  */
-    public function edit(int $id) :View
+    public function edit(Client $client) :View
     {
-        $client = Client::findOrFail($id);
-
         return view('clients.edit', [
             'client'=>$client
         ]);
     }
 
-
-
 /**
  * Atualiza cliente
  *
- * @param integer $id
+ * @param Client $client
  * @param Request $request
  * @return RedirectResponse
  */
-    public function update(int $id, ClientRequest $request):RedirectResponse
+    public function update(Client $client, ClientRequest $request):RedirectResponse
     {
-        $client = Client::findOrFail($id);
         $client->update([
             'nome'=>$request->nome,
             'endereco'=>$request->endereco,
@@ -102,12 +96,11 @@ class ClientController extends Controller
 /**
  * Deleta cliente
  *
- * @param integer $id
+ * @param Client $client
  * @return RedirectResponse
  */
-    public function destroy(int $id):RedirectResponse
+    public function destroy(Client $client):RedirectResponse
     {
-        $client = Client::findOrFail($id);
         $client->delete();
 
         return redirect()->route('clients.index')->with('deletado','Item deletado com sucesso!');

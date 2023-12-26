@@ -75,12 +75,11 @@ class ProjectController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  Project $project
      * @return \Illuminate\Http\Response
      */
-    public function edit($id): \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+    public function edit(Project $project): \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
     {
-        $project = Project::findOrFail($id);
         $clientes = Client::get();
         $funcionarios = Employee::ativos();
         return view('projects.edit',['project'=>$project,'clients'=>$clientes,'employees'=>$funcionarios]);
@@ -90,13 +89,11 @@ class ProjectController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  Project $project
      * @return \Illuminate\Http\Response
      */
-    public function update(ProjectRequest $request, $id): \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+    public function update(ProjectRequest $request, Project $project): \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
     {
-        // dd($request->all());
-        $project = Project::findOrFail($id);
         DB::transaction(function()use($request,$project){
 
             $project->update(
@@ -111,13 +108,12 @@ class ProjectController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  Project $project
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id): \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+    public function destroy(Project $project): \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
 
     {
-        $project = Project::findOrFail($id);
         DB::transaction(function() use($project) {
             $project->employees()->sync([]);
             $project->delete();

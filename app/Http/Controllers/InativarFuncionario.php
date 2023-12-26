@@ -11,13 +11,12 @@ class InativarFuncionario extends Controller
     /**
      * Handle the incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  Employee $employee
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function __invoke(int $id): \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+    public function __invoke(Employee $employee): \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
 
     {
-        $employee = Employee::findOrFail($id);
 
         if($employee->data_demissao) {
             return redirect()->route('employees.show', $employee)
