@@ -1,5 +1,5 @@
 @extends('app')
-@section('titulo', 'Detalhes do projecte')
+@section('titulo', 'Detalhes do projeto')
 
 @section('conteudo')
     <div class="card">
@@ -14,7 +14,7 @@
         </div>
     </div>
     <hr>
-    <h2>Funcionários que trabalham no projeto</h2>
+    <h2 class="mt-5">Funcionários que trabalham no projeto</h2>
     <table class="table">
         <thead>
             <tr>
@@ -23,12 +23,17 @@
             </tr>
         </thead>
         <tbody>
-            @foreach ($project->employees as $employee)
-            <tr>
-                <th scope="row">{{ $employee->id }}</th>
-                <td>{{$employee->nome}}</td>
-            </tr>
-            @endforeach
+            @forelse ($project->employees as $employee)
+                <tr>
+                    <th scope="row">{{ $employee->id }}</th>
+                    <td>{{$employee->nome}}</td>
+                </tr>
+            @empty
+                <tr>
+                    <th scope="row"></th>
+                    <td>Nenhum funcionário cadastrado</td>
+                </tr>
+            @endforelse
         </tbody>
     </table>
         

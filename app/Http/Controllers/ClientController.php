@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ClientRequest;
 use App\Models\Client;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -15,7 +16,7 @@ class ClientController extends Controller
      */
     public function index() : View
     {
-        $clientes = Client::get();
+        $clientes = Client::paginate(10);
         return view("clients.index", [
             "clients"=> $clientes
         ]
@@ -52,12 +53,13 @@ class ClientController extends Controller
      * @param Request $request
      * @return RedirectResponse
      */
-    public function store(Request $request):RedirectResponse
+    public function store(ClientRequest $request):RedirectResponse
     {
         $dados = $request->except('_token');
         Client::create($dados);
 
-        return redirect('/clients');
+        return redirect()->route('clients.index')
+        ->with('mensagem','Cadastrado com sucesso!');
     }
 
 
@@ -85,7 +87,7 @@ class ClientController extends Controller
  * @param Request $request
  * @return RedirectResponse
  */
-    public function update(int $id, Request $request):RedirectResponse
+    public function update(int $id, ClientRequest $request):RedirectResponse
     {
         $client = Client::findOrFail($id);
         $client->update([
@@ -94,7 +96,7 @@ class ClientController extends Controller
             'observacao'=>$request->observacao
         ]);
 
-        return redirect('/clients');
+        return redirect()->route('clients.index')->with('mensagem','Atualizado com sucesso');
     }
 
 /**
@@ -108,6 +110,6 @@ class ClientController extends Controller
         $client = Client::findOrFail($id);
         $client->delete();
 
-        return redirect('/clients');
+        return redirect()->route('clients.index')->with('deletado','Item deletado com sucesso!');
     }
 }

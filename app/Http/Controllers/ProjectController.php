@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ProjectRequest;
+use App\Models\Client;
+use App\Models\Employee;
 use App\Models\Project;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ProjectController extends Controller
 {
@@ -23,11 +27,17 @@ class ProjectController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      */
-    public function create()
+    public function create(): \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+
     {
-        //
+        $clientes = Client::get();
+        $funcionarios = Employee::ativos();
+        return view('projects.create',[
+            'clients'=>$clientes,
+            'employees'=>$funcionarios
+        ]);
     }
 
     /**
@@ -36,9 +46,17 @@ class ProjectController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ProjectRequest $request): \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
     {
-        //
+        DB::transaction(function()use($request){
+
+            $project = Project::create(
+                $request->except(['_token','funcionarios'])
+            );
+            $project->employees()->attach($request->funcionarios);
+        });
+        return redirect()->route('projects.index')
+            ->with('mensagem','Projeto salvo com sucesso');
     }
 
     /**
@@ -49,7 +67,6 @@ class ProjectController extends Controller
     public function show(Project $project)
     {
         $project->load('client','employees');
-        dd($project);
         return view('projects.show', [
             'project'=>$project
         ]);
@@ -61,9 +78,12 @@ class ProjectController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($id): \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
     {
-        //
+        $project = Project::findOrFail($id);
+        $clientes = Client::get();
+        $funcionarios = Employee::ativos();
+        return view('projects.edit',['project'=>$project,'clients'=>$clientes,'employees'=>$funcionarios]);
     }
 
     /**
@@ -73,9 +93,19 @@ class ProjectController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(ProjectRequest $request, $id): \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
     {
-        //
+        // dd($request->all());
+        $project = Project::findOrFail($id);
+        DB::transaction(function()use($request,$project){
+
+            $project->update(
+                $request->except(['_token','funcionarios'])
+            );
+            $project->employees()->sync($request->funcionarios);
+        });
+        return redirect()->route('projects.index')
+            ->with('mensagem','Projeto atualizado com sucesso');
     }
 
     /**
@@ -84,8 +114,14 @@ class ProjectController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($id): \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+
     {
-        //
+        $project = Project::findOrFail($id);
+        DB::transaction(function() use($project) {
+            $project->employees()->sync([]);
+            $project->delete();
+        });
+        return redirect()->route('projects.index')->with('deletado','Projeto deletado com sucesso');
     }
 }

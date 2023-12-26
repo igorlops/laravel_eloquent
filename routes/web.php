@@ -1,9 +1,10 @@
 <?php
 
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\Home;
+use App\Http\Controllers\InativarFuncionario;
 use App\Http\Controllers\ProjectController;
-use App\Http\Controllers\Saudacao;
-use App\Http\Controllers\SiteController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -17,29 +18,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Route::get('/', function () {
-//     return view('welcome');
-// });
-
-Route::get('/', [SiteController::class, 'index'])->name('index');
-Route::get('/sobre', [SiteController::class, 'sobre'])->name('sobre');
-Route::get('/contato', [SiteController::class, 'contato'])->name('contato');
-Route::get('/servicos', [SiteController::class, 'servicos'])->name('servicos');
-Route::get('/servico/{id}', [SiteController::class, 'servico']);
-
-Route::get('/saudacao/{nome?}', Saudacao::class);
-
-// Route::get('/clients', [ClientController::class, "index"])->name('clients.index');
-// Route::get("/clients/create", [ClientController::class, "create"])->name("clients.create");
-// Route::get('/clients/{id}', [ClientController::class, "show"])->name('clients.show');
-// Route::post('/clients',[ ClientController::class, 'store'])->name('clients.store');
-// Route::get('/clients/{id}/edit', [ClientController::class, "edit"])->name('clients.edit');
-// Route::put('/clients/{id}', [ClientController::class, 'update'])->name('clients.update');
-// Route::delete('/clients/{id}', [ClientController::class, 'destroy'])->name('clients.destroy');
-
+Route::get('/', Home::class )->name('home');
 
 // No laravel usando o resource ele substitue Todos os métodos acima
 Route::resource('clients', ClientController::class);
+Route::resource('employees',EmployeeController::class);
+Route::resource('projects',ProjectController::class);
 
-Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
-Route::get('/projects/{project}', [ProjectController::class, 'show'])->name('projects.show');
+Route::get('/employee/{employee}/inativar',InativarFuncionario::class)->name('employees.inativar');

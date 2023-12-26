@@ -41,4 +41,9 @@ class Employee extends Model
     {
         return $this->belongsToMany(Project::class,'employee_project','employee_id','project_id');
     }
+
+    static public function ativos()
+    {
+        return Employee::where('data_demissao',null)->get();
+    }
 }
